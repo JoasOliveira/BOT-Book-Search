@@ -1,28 +1,29 @@
 import os
+import keyring
 import discord
 from discord.ext import commands
 
 intents = discord.Intents.default()
+intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
+
 
 @bot.event
 async def on_ready():
-    print('Bot conectado como {0.user}'.format(bot))
+    print('Bot online')
+    await check_files_in_directory('E:/Livros')
 
-@bot.command()
-async def send_files(ctx):
-    directory = '/caminho/para/seu/diretorio'
 
+async def send_file_to_discord(file_path, channel_id):
+    channel = bot.get_channel(channel_id)
+    with open(file_path, 'rb') as fp:
+        await channel.send(file=discord.File(fp, os.path.basename(file_path)))
+
+async def check_files_in_directory(directory):
     for filename in os.listdir(directory):
-        if filename.startswith("Python"):
-            # Substitua pelo ID do canal Python
-            channel = bot.get_channel(1184522501439623179)
-        elif filename.startswith("Javascript"):
-            # Substitua pelo ID do canal Javascript
-            channel = bot.get_channel(1184522419348701285)
-        else:
-            continue
+        if filename.startswith('java'):
+            await send_file_to_discord(os.path.join(directory, filename), 1184522501439623179)
+        elif filename.startswith('python'):
+            await send_file_to_discord(os.path.join(directory, filename), 1186401484431171614)
 
-        await channel.send(file=discord.File(os.path.join(directory, filename)))
-
-bot.run('MTE4NTIxOTI2NjY2NTAwOTIwMw.GgLR_l.bnnibbhW0wt6BulRjNJ5vwPmCA6j3R01SCszEw')
+bot.run(keyring.get_password('bot_book', 'token'))
