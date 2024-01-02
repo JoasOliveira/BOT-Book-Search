@@ -5,7 +5,7 @@ from discord.ext import commands
 help_options = {
     '1': {
         'category': 'Linguagens de Programação',
-        'options': ['Angular', 'C++', 'C#', 'Elixir', 'GO', 'Java', 'JavaScript', 'Linguagem R', 'Pascal', 'PHP', 'Python', 'Ruby', 'VueJS']
+        'options': ['Angular', 'C++', 'C#', 'Elixir', 'GO', 'Java', 'JavaScript', 'Linguagem R', 'Pascal', 'PHP', 'Python', 'Ruby', 'VueJS', '.NET']
     },
     '2': {
         'category': 'Ferramentas e Tecnologias',
@@ -13,7 +13,7 @@ help_options = {
     },
     '3': {
         'category': 'Conceitos e Metodologias',
-        'options': ['Agile', 'Algoritmo e Programação', 'primoramento de Skills', 'Arquitetura de Computadores', 'BI', 'BITCOIN _ BLOCKCHAIN', 'Banco de Dados', 'Big Data', 'ChatGPT', 'Ciência da Computação', 'Compiladores', 'Computação Gráfica', 'Computação Quântica', 'Computação em Nuvem', 'Crypto e Mineração', 'Data Science', 'Deep Learning', 'Design Thinking', 'Design', 'Eletronica', 'Engenharia de Software', 'Estatística e Ciência de Dados', 'Fonética e Ortografia', 'Games', 'Inteligência Artificial', 'IoT', 'Lógica', 'Machine Learning', 'Orientação a Objetos', 'Redes de Computadores', 'Requisitos de Software', 'SCRUM', 'Segurança da Informação', 'Sistemas Operacionais', 'Startup', 'Teoria da Computação', 'Teoria dos Grafos', 'UX Design', 'WebDesign']
+        'options': ['Agile', 'Algoritmo e Programação', 'Android', 'Aplicações Web e Mobile', 'primoramento de Skills', 'Arquitetura de Computadores', 'BI', 'BITCOIN _ BLOCKCHAIN', 'Banco de Dados', 'Big Data', 'ChatGPT', 'Ciência da Computação', 'Compiladores', 'Computação Gráfica', 'Computação Quântica', 'Computação em Nuvem', 'Crypto e Mineração', 'Data Science', 'Deep Learning', 'Design Thinking', 'Design', 'Eletronica', 'Engenharia de Software', 'Estatística e Ciência de Dados', 'Fonética e Ortografia', 'Games', 'Inteligência Artificial', 'IoT', 'Lógica', 'Machine Learning', 'Orientação a Objetos', 'Redes de Computadores', 'Requisitos de Software', 'SCRUM', 'Segurança da Informação', 'Sistemas Operacionais', 'Startup', 'Teoria da Computação', 'Teoria dos Grafos', 'UX Design', 'WebDesign']
     },
     '4': {
         'category': 'Solicitar Conteudo',
@@ -21,37 +21,38 @@ help_options = {
     },
 }
 
-OPTIONS_PER_PAGE = 10
+OPTIONS_PER_PAGE = 20
 current_page = 0
 current_category = None
 selected_option = None
 
-mensage_comandos = 'Lista todos os comandos disponiveis para seleção | digite o comando /comandos'
-mensage_categoria = 'Lista todos as categorias disponiveis para seleção | digite o comando /categoria <numero da categoria>'
-mensage_livro = 'Lista todos os livros disponiveis para seleção | digite o comando /livro <nome do livro>'
+mensage_comandos = 'Lista todos as categorias disponiveis para seleção | digite o comando /categorias'
+mensage_categoria = 'Selecionar uma das categorias | digite o comando /categoria <numero>'
+mensage_livro = 'Escolher um dos livros | digite o comando /livro <nome do livro>'
 mensage_proxima = 'Passa para a proxima pagina | digite o comando /proxima'
 mensage_anterior = 'Volta para a pagina anterior | digite o comando /anterior'
 
-
 def setup_commands(bot):
-  @bot.tree.command(name='comandos', description=f'{mensage_comandos}')
+  @bot.tree.command(name='categorias', description=f'{mensage_comandos}')
   async def comandos(interaction: discord.Interaction):
-      global current_page
-      global current_category
-      current_page = 0
-      current_category = None
-      categories = [f"{key} - {value['category']}" for key,
-                    value in help_options.items()]
-      max_length = max(len(category) for category in categories)
-      border = "-" * (max_length + 4)
-      help_message = border + "\n"
-      for category in categories:
-          category_line = f"| {category.ljust(max_length)} |"
-          help_message += category_line + "\n"
-      help_message += border
-      await interaction.response.send_message(f"```\n{help_message}\n```")
+    global current_page
+    global current_category
+    current_page = 0
+    current_category = None
+    categories = [f"{key} - {value['category']}" for key,
+                  value in help_options.items()]
+    max_length = max(len(category) for category in categories)
+    border = "-" * (max_length + 4)
+    title = "-- Categorias --"
+    title_padding = " " * ((max_length - len(title)) // 2)  # Adicionado espaços para centralizar o título
+    help_message = title_padding + title + "\n" + border + "\n"
+    for category in categories:
+        category_line = f"| {category.ljust(max_length)} |"
+        help_message += category_line + "\n"
+    help_message += border
+    await interaction.response.send_message(f"```\n{help_message}\n```")
 
-  @bot.tree.command(name='categoria', description=f'{mensage_categoria}')
+  @bot.tree.command(name='selecionar_categorias', description=f'{mensage_categoria}')
   async def categoria(interaction: discord.Interaction, category: str):
       global current_category
       if category in help_options:
@@ -61,7 +62,7 @@ def setup_commands(bot):
       else:
           await interaction.response.send_message("Categoria inválida. Por favor, selecione uma categoria válida.")
 
-  @bot.tree.command(name='livro', description=f'{mensage_livro}')
+  @bot.tree.command(name='escolher_livro', description=f'{mensage_livro}')
   async def livro(interaction: discord.Interaction, option: str):
       global selected_option
       if current_category is not None and option in current_category['options']:
@@ -94,8 +95,8 @@ def setup_commands(bot):
           max_length = max(len(option)
                            for option in options_to_display + [category_name])
           options_message = "\n".join(
-              f"| {option.ljust(max_length)} |" for option in options_to_display)
-          border = "-" * (max_length + 4)
+              f"| 📖{option.ljust(max_length)} |" for option in options_to_display)
+          border = "-" * (max_length + 6)  # Ajustado para acomodar o emoji
           category_name = category_name.center(len(border), "-")
           options_message = f"{category_name}\n{border}\n{options_message}\n{border}"
           # Calcula o número total de páginas
@@ -111,7 +112,7 @@ def setup_commands(bot):
       else:
           await interaction.followup.send(message)
 
-  async def check_files_in_directory(directory, user):
+async def check_files_in_directory(directory, user):
       global selected_option
       if selected_option is None:
           print("Nenhuma opção selecionada.")
@@ -121,6 +122,6 @@ def setup_commands(bot):
           if selected_option in filename:
               await send_file_to_discord(os.path.join(directory, filename), user)
 
-  async def send_file_to_discord(filepath, user):
-      with open(filepath, 'rb') as f:
-          await user.send(file=discord.File(f))
+async def send_file_to_discord(filepath, user):
+    with open(filepath, 'rb') as f:
+        await user.send(file=discord.File(f, filename='Comunidade Developers ' + os.path.basename(filepath)))
