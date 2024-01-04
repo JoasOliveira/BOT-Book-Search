@@ -15,13 +15,9 @@ help_options = {
         'category': 'Conceitos e Metodologias',
         'options': ['Agile', 'Algoritmo e Programação', 'Android', 'Aplicações Web e Mobile', 'primoramento de Skills', 'Arquitetura de Computadores', 'BI', 'BITCOIN _ BLOCKCHAIN', 'Banco de Dados', 'Big Data', 'ChatGPT', 'Ciência da Computação', 'Compiladores', 'Computação Gráfica', 'Computação Quântica', 'Computação em Nuvem', 'Crypto e Mineração', 'Data Science', 'Deep Learning', 'Design Thinking', 'Design', 'Eletronica', 'Engenharia de Software', 'Estatística e Ciência de Dados', 'Fonética e Ortografia', 'Games', 'Inteligência Artificial', 'IoT', 'Lógica', 'Machine Learning', 'Orientação a Objetos', 'Redes de Computadores', 'Requisitos de Software', 'SCRUM', 'Segurança da Informação', 'Sistemas Operacionais', 'Startup', 'Teoria da Computação', 'Teoria dos Grafos', 'UX Design', 'WebDesign']
     },
-    '4': {
-        'category': 'Solicitar Conteudo',
-        'options': ['Solicitar Conteudo']
-    },
 }
 
-OPTIONS_PER_PAGE = 20
+OPTIONS_PER_PAGE = 35
 current_page = 0
 current_category = None
 selected_option = None
