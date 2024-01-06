@@ -5,15 +5,15 @@ from discord.ext import commands
 help_options = {
     '1': {
         'category': 'Linguagens de Programação',
-        'options': ['Angular', 'C++', 'C#', 'Elixir', 'GO', 'Java', 'JavaScript', 'Linguagem R', 'Pascal', 'PHP', 'Python', 'Ruby', 'VueJS', '.NET']
+        'options': ['1 - Angular', '2 - C++', '3 - C#', '4 - Elixir', '5 - GO', '6 - Java', '7 - JavaScript', '8 - Linguagem R', '9 - Pascal', '10 - PHP', '11 - Python', '12 - Ruby', '13 - VueJS', '14 - .NET']
     },
     '2': {
         'category': 'Ferramentas e Tecnologias',
-        'options': ['APis', 'Arduino', 'Doker', 'GIT _ GITHUB', 'HTML e CSS', 'Markdown', 'MongoDB', 'NodeJS', 'React', 'Redis', 'SQL', 'Shell Script', 'Virtual Box']
+        'options': ['1 - APis', '2 - Arduino', '3 - Doker', '4 - GIT _ GITHUB', '5 - HTML e CSS', '6 - Markdown', '7 - MongoDB', '8 - NodeJS', '9 - React', '10 - Redis', '11 - SQL', '12 - Shell Script', '13 - Virtual Box']
     },
     '3': {
         'category': 'Conceitos e Metodologias',
-        'options': ['Agile', 'Algoritmo e Programação', 'Android', 'Aplicações Web e Mobile', 'primoramento de Skills', 'Arquitetura de Computadores', 'BI', 'BITCOIN _ BLOCKCHAIN', 'Banco de Dados', 'Big Data', 'ChatGPT', 'Ciência da Computação', 'Compiladores', 'Computação Gráfica', 'Computação Quântica', 'Computação em Nuvem', 'Crypto e Mineração', 'Data Science', 'Deep Learning', 'Design Thinking', 'Design', 'Eletronica', 'Engenharia de Software', 'Estatística e Ciência de Dados', 'Fonética e Ortografia', 'Games', 'Inteligência Artificial', 'IoT', 'Lógica', 'Machine Learning', 'Orientação a Objetos', 'Redes de Computadores', 'Requisitos de Software', 'SCRUM', 'Segurança da Informação', 'Sistemas Operacionais', 'Startup', 'Teoria da Computação', 'Teoria dos Grafos', 'UX Design', 'WebDesign']
+        'options': ['1 - Agile', '2 - Algoritmo e Programação', '3 - Android', '4 - Aplicações Web e Mobile', '5 - primoramento de Skills', '6 - Arquitetura de Computadores', '7 - BI', '8 - BITCOIN _ BLOCKCHAIN', '9 - Banco de Dados', '10 - Big Data', '11 - ChatGPT', '12 - Ciência da Computação', '13 - Compiladores', '14 - Computação Gráfica', '15 - Computação Quântica', '16 - Computação em Nuvem', '17 - Crypto e Mineração', '18 - Data Science', '19 - Deep Learning', '20 - Design Thinking', '21 - Design', '22 - Eletronica', '23 - Engenharia de Software', '24 - Estatística e Ciência de Dados', '25 - Fonética e Ortografia', '26 - Games', '27 - Inteligência Artificial', '28 - IoT', '29 - Lógica', '30 - Machine Learning', '31 - Orientação a Objetos', '32 - Redes de Computadores', '33 - Requisitos de Software', '34 - SCRUM', '35 - Segurança da Informação', '36 - Sistemas Operacionais', '37 - Startup', '38 - Teoria da Computação', '39 - Teoria dos Grafos', '40 - UX Design', '41 - WebDesign']
     },
 }
 
@@ -60,13 +60,22 @@ def setup_commands(bot):
 
   @bot.tree.command(name='escolher_livro', description=f'{mensage_livro}')
   async def livro(interaction: discord.Interaction, option: str):
-      global selected_option
-      if current_category is not None and option in current_category['options']:
-          selected_option = option
-          await interaction.response.send_message(f"Opção {selected_option} selecionada.")
-          await check_files_in_directory('G:/Livros', interaction.user)
-      else:
-          await interaction.response.send_message("Opção inválida. Por favor, selecione uma opção válida.")
+    global selected_option
+    if current_category is not None:
+        try:
+            # Subtrai 1 porque a lista de opções é baseada em zero
+            option_index = int(option) - 1
+            if 0 <= option_index < len(current_category['options']):
+                # Pega o texto da opção correspondente ao número
+                selected_option = current_category['options'][option_index].split('- ')[1]
+                await interaction.response.send_message(f"Opção {selected_option} selecionada.")
+                await check_files_in_directory('G:/Livros', interaction.user)
+            else:
+                await interaction.response.send_message("Opção inválida. Por favor, selecione uma opção válida.")
+        except ValueError:
+            await interaction.response.send_message("Por favor, insira um número válido.")
+    else:
+        await interaction.response.send_message("Categoria inválida. Por favor, selecione uma categoria válida.")
 
   @bot.tree.command(name='proxima', description=f'{mensage_proxima}')
   async def proxima(interaction: discord.Interaction):
@@ -87,7 +96,7 @@ def setup_commands(bot):
           start_index = current_page * OPTIONS_PER_PAGE
           end_index = start_index + OPTIONS_PER_PAGE
           options_to_display = current_category['options'][start_index:end_index]
-          category_name = f" Categoria: {current_category['category']} "
+          category_name = f" Escolha seu livro: {current_category['category']} "
           max_length = max(len(option)
                            for option in options_to_display + [category_name])
           options_message = "\n".join(
