@@ -16,4 +16,4 @@ async def on_ready():
 
 setup_commands(bot)
 
-bot.run(keyring.get_password('bot_book', 'token'))
+bot.run(keyring.get_password('discord_book', 'token'))
